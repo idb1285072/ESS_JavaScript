@@ -1,0 +1,20 @@
+# `var`, `let` and `const`
+- `var`
+  - Function Scope
+  - Can be redeclared in same scope
+  - Can be reassigned
+- `let`
+  - Introduced in ES6(2015)
+  - Block Scope
+  - Must declare before use
+  - Connot be redeclared in the same scope
+- `const`
+  - Block Scope
+  - Must initialize when declare
+  - Cannot be redeclared
+  - Cannot be reassigned
+- Avoid using `var` in Modern JavaScript
+  - Function-scoped
+  - Hosting with undefined
+  - Can be re-declared
+  - TDZ not enforced
