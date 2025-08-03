@@ -3,11 +3,11 @@
 - Classes
 - Array, Array Methods
 
-- Loops
 - Regular Expression
 
 ---
 
+- Loops
 - Scope
 - Strict Mode
 - Template Literals
