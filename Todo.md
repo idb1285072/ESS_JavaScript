@@ -2,7 +2,6 @@
 - Object
 - Classes
 - Array, Array Methods
-
 - Regular Expression
 
 ---

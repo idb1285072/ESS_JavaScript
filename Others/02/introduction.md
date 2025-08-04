@@ -1,0 +1,3 @@
+* JavaScript is a high-level object-oriented, multi-paradigm programming language.
+* Modern JS: ES6/ES2015, ... 
+* console: `Ctrl` + `Shift` + `J`

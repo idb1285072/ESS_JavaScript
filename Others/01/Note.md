@@ -1,0 +1,4 @@
+- Watch Video and Take Note
+- Revise and Code
+- Challenge
+- More deep and research
