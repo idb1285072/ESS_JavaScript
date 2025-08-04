@@ -15,3 +15,16 @@ const rawData = [
   { id: 14, title: 'Returns', parentId: 12 }
 ]
 
+const buildTree=(data, parentId = 0) => {
+  return data
+    .filter(item => item.parentId === parentId)
+    .map(item => {
+      const children = buildTree(data, item.id);
+      return children.length > 0
+        ? { title: item.title, children }
+        : { title: item.title };
+    });
+}
+
+const nestedData = buildTree(rawData);
+console.log(nestedData)
