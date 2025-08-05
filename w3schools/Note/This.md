@@ -1,0 +1,4 @@
+- In object method, `this` refers to the Object
+- When used alone, `this` refers to the global Object
+- In a function, `this` refers to the global Object. But in `strict mode`, `undefined`
+- In HTML event handlers, `this` refers to the HTML element on which the handler is defined

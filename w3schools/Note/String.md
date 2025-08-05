@@ -1,0 +1,17 @@
+# String
+- length
+- Escape Character
+- `[]`,`at(position)`, `charAt(position)`, `charCodeAt(position)`, `codePointAt(position)`
+- `slice(start, end)`, `substring(start, end)`, `substr(start, length)`
+- `toUpperCase()`, `toLowerCase()`
+- `isWellFormed()`
+- `trim()`, `trimStart()`, `trimEnd()`
+- `padStart(n, "*")`, `padEnd(n, "*")`
+- `repeat(count)`
+- `replace("Old", "New")`, `/i` - insensitive, `/g` - global match, `replaceAll()`
+- `split(",")`
+---
+- High Surrogate: \uD800–\uDBFF
+- Low Surrogate: \uDC00–\uDFFF
+- Surrogate Pair = high + low surrogate
+- If Lone Surrogate, `isWellFormed()` return `false`

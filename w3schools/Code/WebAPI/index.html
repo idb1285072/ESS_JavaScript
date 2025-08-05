@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Web API</title>
+    <script src="./GeolocationAPI.js"></script>
+    <!-- <script src="./ValidationAPI.js"></script> -->
+  </head>
+  <body>
+    <h1>Web API</h1>
+
+    <input
+      type="number"
+      id="quantity"
+      min="1"
+      max="10"
+      required
+      onchange="validateInput()"
+    />
+    <button onclick="validateInput()">Submit</button>
+    <p id="result"></p>
+
+    <script>
+      const worker = new Worker("worker.js");
+      worker.postMessage(100000);
+      worker.onmessage = (e) => {
+        console.log(`Found primes: ${e.data}`);
+      };
+
+      // Terminating the worker
+      // worker.terminate();
+    </script>
+  </body>
+</html>
