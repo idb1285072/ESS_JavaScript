@@ -70,24 +70,12 @@ btn.addEventListener("click", (event) => {
   form.reset();
 });
 
-// Parent Dynamic DropDown
-// const buildParentOptions = (items, path = "") => {
-//   let options = "";
-//   items.forEach((item) => {
-//     const fullPath = path ? `${path} > ${item.title}` : item.title;
-//     options += `<option value="${fullPath}">${fullPath}</option>`;
-//     if (item.children) {
-//       options += buildParentOptions(item.children, fullPath);
-//     }
-//   });
-//   return options;
-// };
 const buildParentOptions = (items, depth = 0, path = "") => {
   let options = "";
 
   items.forEach((item) => {
     const fullPath = path ? `${path} > ${item.title}` : item.title;
-    const indent = "&nbsp;".repeat(depth*4); 
+    const indent = "&nbsp;".repeat(depth * 4);
     options += `<option value="${fullPath}">${indent} ${item.title}</option>`;
     if (item.children) {
       options += buildParentOptions(item.children, depth + 1, fullPath);
@@ -95,7 +83,6 @@ const buildParentOptions = (items, depth = 0, path = "") => {
   });
   return options;
 };
-
 
 const updateParentSelect = () => {
   const select = document.getElementById("parentSelect");
