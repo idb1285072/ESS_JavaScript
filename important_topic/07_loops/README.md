@@ -1,9 +1,11 @@
 # Loops
 
-- for loops are best when the **iteration count is known**
-- while loops are ideal when the **condition is dynamic**
-- do...while loops are perfect when you need **at least one run**
-- for...in loops (Key) are used for **Object**, Array (shouldn't use because of order)
+Loops are used to handle repeated task
+
+- for loops are best when we know or can calculate **the exact number of iteration**
+- while loops are ideal when we **don't know the exact number of iterations**
+- do...while loops are perfect when we don't know the exact number of iterations and we need **execute the loop block at least once**
+- for...in loops (Key/index) are used for **Object**, Array (shouldn't use because of order)
 - for...of loops (Value) are used for **Array, String, Map, Set**
 
 ---

@@ -19,9 +19,9 @@ class MathUtil {
 }
 console.log(MathUtil.square(5)); // 25
 const m = new MathUtil();
-// m.square(5); // ❌ Error: not an instance method
+// m.square(5); // Error: not an instance method
 class Config {
-  static defaultLanguage = 'en';
+  static defaultLanguage = "en";
 }
 console.log(Config.defaultLanguage); // en
 
@@ -41,10 +41,10 @@ class Rectangle {
   }
 }
 const rect = new Rectangle(4, 5);
-console.log(rect.area);  // 20 (getter)
-rect.area = 16;          // setter updates width and height
+console.log(rect.area); // 20 (getter)
+rect.area = 16; // setter updates width and height
 console.log(rect.width); // 4
-console.log(rect.height);// 4
+console.log(rect.height); // 4
 
 // this inside class
 class Counter {
@@ -57,23 +57,22 @@ class Counter {
   }
 }
 const c = new Counter();
-c.increment();  // 1
-c.increment();  // 2
-
+c.increment(); // 1
+c.increment(); // 2
 
 // class fields (public and private)
 class User {
-  name = 'Anonymous';   // public field with default value
+  name = "Anonymous"; // public field with default value
   constructor(age) {
     this.age = age;
   }
 }
 const u = new User(25);
 console.log(u.name); // Anonymous
-console.log(u.age);  // 25
+console.log(u.age); // 25
 
 class BankAccount {
-  #balance = 0;  // private field
+  #balance = 0; // private field
   constructor(initialBalance) {
     this.#balance = initialBalance;
   }
@@ -85,5 +84,5 @@ class BankAccount {
   }
 }
 const account = new BankAccount(1000);
-console.log(account.getBalance());  // 1000
+console.log(account.getBalance()); // 1000
 // console.log(account.#balance);   // SyntaxError: Private field '#balance' must be declared in an enclosing class

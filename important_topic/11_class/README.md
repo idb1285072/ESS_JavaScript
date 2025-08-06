@@ -36,7 +36,6 @@ Classes make JavaScript OOP easier, cleaner, and more maintainable while still l
 
 ## Syntax
 
-
 ### Class Declaration
 
 The most common way to define a class:

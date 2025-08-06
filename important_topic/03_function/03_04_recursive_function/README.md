@@ -2,6 +2,12 @@
 
 **Recursion** is a technique in programming where a **function calls itself** to solve a problem by breaking it down into smaller, simpler versions of the same problem.
 
+## When Recursion:
+
+- The problem is inherently hierarchical or nested (e.g., trees, menus, directories).
+- You need to break a problem into smaller subproblems of the same type.
+- You’re not sure how deep the structure goes.
+
 ## Core Idea:
 
 > A recursive function **solves a small part of a problem** and then **calls itself** to solve the rest.
