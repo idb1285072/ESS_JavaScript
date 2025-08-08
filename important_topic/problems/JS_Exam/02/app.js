@@ -1,48 +1,64 @@
-const rawData = [
-  { id: 0, parent: "Fruits", child: "Apple", parentIndex: 0 },
-  { id: 1, parent: "Vegetables", child: "Toto", parentIndex: 0 },
-  { id: 2, parent: "Vegetables", child: "Toto", parentIndex: 1 },
+const form = document.getElementById("form");
+const parentInput = document.getElementById("parent");
+const childInput = document.getElementById("child");
+const parentIndexInput = document.getElementById("parentIndex");
+const menuContainer = document.getElementById("menu");
+
+// Demo data
+let menuData = [
+  { parent: "Fruits", children: ["Apple", "Banana", "Orange"] },
+  { parent: "Vegetables", children: ["Carrot", "Broccoli"] },
+  { parent: "Drinks", children: ["Water", "Coffee", "Tea"] }
 ];
 
-const buildTree = (data, parentIndex) =>
-  data
-    .filter((item) => item.parentIndex === parentIndex)
-    .map((item) => {
-      const children = buildTree(data, item.id);
-      console.log(children);
-      return children.length > 0
-        ? { id: item.id, child: item.child, children: children }
-        : { id: item.id, child: item.child };
-    });
-const nestedData = buildTree(rawData);
-console.log(nestedData);
-
-// Render Menu
-const menu = document.getElementById("menu");
-const renderMenu = (data) => {
+function renderMenu() {
+  menuContainer.innerHTML = "";
   const ul = document.createElement("ul");
-  data.forEach((item) => {
+  ul.classList.add("list-group");
+
+  menuData.forEach((item, index) => {
     const li = document.createElement("li");
-    li.textContent = item.child;
-    if (item.children) li.appendChild(renderMenu(item.children));
+    li.classList.add("list-group-item");
+
+    const parentText = document.createElement("strong");
+    parentText.textContent = `${index + 1}. ${item.parent}`;
+    li.appendChild(parentText);
+
+    if (item.children.length > 0) {
+      const childUl = document.createElement("ul");
+      childUl.classList.add("mt-2");
+      item.children.forEach((child) => {
+        const childLi = document.createElement("li");
+        childLi.textContent = child;
+        childUl.appendChild(childLi);
+      });
+      li.appendChild(childUl);
+    }
     ul.appendChild(li);
   });
-  return ul;
-};
-menu.appendChild(renderMenu(nestedData));
+  menuContainer.appendChild(ul);
+}
 
-const form = document.getElementById("form");
-document.getElementById("btn").addEventListener("click", (event) => {
-  event.preventDefault();
-  const parent = document.getElementById("parent").value;
-  const child = document.getElementById("child").value;
-  const parentIndex = document.getElementById("parentIndex").value;
-  console.log(parent, child, parentIndex);
-  const id = rawData.at(-1).id + 1;
-  rawData.push({ id, parent, child, parentIndex: Number(parentIndex) });
-  const nestedData = buildTree(rawData);
-  console.log(rawData)
-  menu.innerHTML = "";
-  menu.appendChild(renderMenu(nestedData));
-  form.reset();
+form.addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  const parentVal = parentInput.value.trim();
+  const childVal = childInput.value.trim();
+  const parentIndexVal = parseInt(parentIndexInput.value.trim(), 10);
+
+  if (parentVal) {
+    menuData.push({ parent: parentVal, children: [] });
+  }
+
+  if (childVal && !isNaN(parentIndexVal) && menuData[parentIndexVal - 1]) {
+    menuData[parentIndexVal - 1].children.push(childVal);
+  }
+
+  renderMenu();
+  parentInput.value = "";
+  childInput.value = "";
+  parentIndexInput.value = "";
 });
+
+// Initial render with demo data
+renderMenu();

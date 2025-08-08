@@ -78,60 +78,48 @@ const steps = [
   { id: 31, name: "Suggest Process Improvements", fkStageId: 15 },
   { id: 32, name: "Create Action Plan", fkStageId: 15 },
 ];
-const dataSet = document.getElementById("dataSet");
+const container = document.getElementById("dataSet");
 
 phases.forEach((phase) => {
-  const phaseDiv = document.createElement("div");
-  phaseDiv.classList.add("phase");
+  const phaseDetails = document.createElement("details");
+  const phaseSummary = document.createElement("summary");
+  phaseSummary.textContent = phase.name;
+  phaseDetails.appendChild(phaseSummary);
 
-  const phaseBtn = document.createElement("button");
-  phaseBtn.textContent = `${phase.name}`;
-  phaseDiv.appendChild(phaseBtn);
-
-  const stageContainer = document.createElement("div");
-  stageContainer.classList.add("hidden");
+  const stageWrapper = document.createElement("div");
+  stageWrapper.classList.add("mx-5");
 
   stages
     .filter((stage) => stage.fkPhaseId === phase.id)
     .forEach((stage) => {
-      const stageDiv = document.createElement("div");
-      stageDiv.classList.add("stage");
+      const stageDetails = document.createElement("details");
+      const stageSummary = document.createElement("summary");
+      stageSummary.textContent = stage.name;
+      stageDetails.appendChild(stageSummary);
 
-      const stageBtn = document.createElement("button");
-      stageBtn.textContent = `${stage.name}`;
-      stageDiv.appendChild(stageBtn);
-
-      const stepContainer = document.createElement("ul");
-      stepContainer.classList.add("hidden");
+      const stepWrapper = document.createElement("div");
+      stepWrapper.classList.add("mx-5");
 
       steps
         .filter((step) => step.fkStageId === stage.id)
         .forEach((step) => {
-          const li = document.createElement("li");
-          li.classList.add("step");
-          li.textContent = step.name;
-          stepContainer.appendChild(li);
+          const stepDetails = document.createElement("details");
+          const stepSummary = document.createElement("summary");
+          stepSummary.textContent = step.name;
+          stepDetails.appendChild(stepSummary);
+          stepWrapper.appendChild(stepDetails);
         });
 
-      stageBtn.addEventListener("click", () => {
-        stepContainer.classList.toggle("hidden");
-        stageBtn.textContent = stepContainer.classList.contains("hidden")
-          ? `${stage.name}`
-          : `${stage.name}`;
-      });
+      if (stepWrapper.children.length > 0) {
+        stageDetails.appendChild(stepWrapper);
+      }
 
-      stageDiv.appendChild(stepContainer);
-      stageContainer.appendChild(stageDiv);
+      stageWrapper.appendChild(stageDetails);
     });
 
-  phaseBtn.addEventListener("click", () => {
-    stageContainer.classList.toggle("hidden");
-    phaseBtn.textContent = stageContainer.classList.contains("hidden")
-      ? `${phase.name}`
-      : `
-      ${phase.name}`;
-  });
+  if (stageWrapper.children.length > 0) {
+    phaseDetails.appendChild(stageWrapper);
+  }
 
-  phaseDiv.appendChild(stageContainer);
-  dataSet.appendChild(phaseDiv);
+  container.appendChild(phaseDetails);
 });
