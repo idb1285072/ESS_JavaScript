@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>cookie</title>
+  </head>
+  <body>
+    <h1>cookie</h1>
+    <script>
+      
+      document.cookie = "user=John; path=/";
+      document.cookie = "theme=dark; path=/";
+      document.cookie = "fontSize=16px; path=/";
+      document.cookie = "token=abc123; path=/";
+      document.cookie = "language=en; path=/";
+
+      // delete or replace 
+      document.cookie = "user=Murad; path=/";
+      // access 
+      console.log(document.cookie);
+    </script>
+  </body>
+</html>
