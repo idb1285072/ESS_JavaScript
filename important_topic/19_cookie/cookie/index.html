@@ -3,22 +3,197 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>cookie</title>
-  </head>
-  <body>
-    <h1>cookie</h1>
-    <script>
-      
-      document.cookie = "user=John; path=/";
-      document.cookie = "theme=dark; path=/";
-      document.cookie = "fontSize=16px; path=/";
-      document.cookie = "token=abc123; path=/";
-      document.cookie = "language=en; path=/";
+    <title>Theme & Cookie Manager</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body.dark-mode {
+        background-color: #121212;
+        color: white;
+      }
 
-      // delete or replace 
-      document.cookie = "user=Murad; path=/";
-      // access 
-      console.log(document.cookie);
+      .deleteBtn {
+        background-color: #e74c3c;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        cursor: pointer;
+        border-radius: 4px;
+      }
+
+      .deleteBtn:hover {
+        background-color: #c0392b;
+      }
+    </style>
+  </head>
+
+  <body class="p-4">
+    <div class="container">
+      <!-- Theme Toggle -->
+      <div class="text-center mb-5">
+        <h1 class="mb-3">Theme Preference with Cookies</h1>
+        <button id="themeBtn" class="btn btn-primary">Toggle Theme</button>
+        <p class="mt-2">
+          Your theme preference is saved in cookies for 7 days.
+        </p>
+      </div>
+
+      <hr />
+
+      <!-- Cookie Manager -->
+      <h2>Cookie Manager</h2>
+      <form id="cookieForm" class="row g-3 mb-4">
+        <div class="col-md-5">
+          <input
+            type="text"
+            id="cookieKey"
+            class="form-control"
+            placeholder="Cookie Key"
+            required
+          />
+        </div>
+        <div class="col-md-5">
+          <input
+            type="text"
+            id="cookieValue"
+            class="form-control"
+            placeholder="Cookie Value"
+            required
+          />
+        </div>
+        <div class="col-md-2">
+          <button type="submit" class="btn btn-success w-100">
+            Set Cookie
+          </button>
+        </div>
+      </form>
+
+      <table id="cookiesTable" class="table table-bordered table-striped">
+        <thead class="table-dark">
+          <tr>
+            <th>Key</th>
+            <th>Value</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Cookies will be listed here -->
+        </tbody>
+      </table>
+    </div>
+
+    <script>
+      // --- Cookie Helpers ---
+      function setCookie(name, value, days) {
+        const expires = new Date(Date.now() + days * 864e5).toUTCString();
+        document.cookie = `${name}=${encodeURIComponent(
+          value
+        )}; expires=${expires}; path=/;`;
+      }
+
+      function getCookie(name) {
+        const cookies = document.cookie ? document.cookie.split("; ") : [];
+        for (let cookie of cookies) {
+          const [key, val] = cookie.split("=");
+          if (key === name) {
+            return decodeURIComponent(val);
+          }
+        }
+        return null;
+      }
+
+      function getAllCookies() {
+        const cookies = document.cookie ? document.cookie.split("; ") : [];
+        return cookies.map((c) => {
+          const [key, val] = c.split("=");
+          return { key, value: decodeURIComponent(val) };
+        });
+      }
+
+      function deleteCookie(name) {
+        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+      }
+
+      // --- Theme Logic ---
+      const body = document.body;
+      const themeBtn = document.getElementById("themeBtn");
+
+      function applyTheme(theme) {
+        if (theme === "dark") {
+          body.classList.add("dark-mode");
+          themeBtn.classList.remove("btn-primary");
+          themeBtn.classList.add("btn-light");
+        } else {
+          body.classList.remove("dark-mode");
+          themeBtn.classList.remove("btn-light");
+          themeBtn.classList.add("btn-primary");
+        }
+      }
+
+      const savedTheme = getCookie("theme");
+      applyTheme(savedTheme);
+
+      themeBtn.addEventListener("click", () => {
+        const newTheme = body.classList.contains("dark-mode")
+          ? "light"
+          : "dark";
+        applyTheme(newTheme);
+        setCookie("theme", newTheme, 7);
+        renderCookies();
+      });
+
+      const form = document.getElementById("cookieForm");
+      const cookiesTableBody = document.querySelector("#cookiesTable tbody");
+
+      function renderCookies() {
+        const cookies = getAllCookies();
+        cookiesTableBody.innerHTML = "";
+
+        if (cookies.length === 0) {
+          cookiesTableBody.innerHTML =
+            '<tr><td colspan="3" class="text-center">No cookies found</td></tr>';
+          return;
+        }
+
+        cookies.forEach(({ key, value }) => {
+          const tr = document.createElement("tr");
+          const tdKey = document.createElement("td");
+          tdKey.textContent = key;
+          const tdValue = document.createElement("td");
+          tdValue.textContent = value;
+          const tdAction = document.createElement("td");
+          const delBtn = document.createElement("button");
+          delBtn.textContent = "Delete";
+          delBtn.className = "deleteBtn btn btn-sm";
+          delBtn.onclick = () => {
+            deleteCookie(key);
+            alert(`Cookie "${key}" deleted`);
+            renderCookies();
+          };
+          tdAction.appendChild(delBtn);
+          tr.appendChild(tdKey);
+          tr.appendChild(tdValue);
+          tr.appendChild(tdAction);
+          cookiesTableBody.appendChild(tr);
+        });
+      }
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const key = document.getElementById("cookieKey").value.trim();
+        const value = document.getElementById("cookieValue").value.trim();
+        if (key && value) {
+          setCookie(key, value, 7);
+          alert(`Cookie "${key}" set with value "${value}"`);
+          form.reset();
+          renderCookies();
+        }
+      });
+      window.onload = () => {
+        renderCookies();
+      };
     </script>
   </body>
 </html>
