@@ -1,21 +1,29 @@
-name: Deploy subfolder to GitHub Pages
+name: Deploy Cookie App to GitHub Pages
 
 on:
   push:
-    branches: [main] # When you push to 'main' branch (change if you use 'master' or other)
+    branches:
+      - main
     paths:
-      - "important_topic/19_cookie/cookie/**" # Only run if files in this folder change
-      - ".github/workflows/gh-pages.yml" # Also run if workflow file changes
+      - "important_topic/19_cookie/cookie/**"
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest # The server environment
-
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4 # Step 1: Checkout your repo (download code)
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16"
 
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3 # Step 2: Use a popular action to deploy to gh-pages branch
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }} # Permission token provided by GitHub automatically
-          publish_dir: ./important_topic/19_cookie/cookie # Folder to publish
+          personal_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./important_topic/19_cookie/cookie
+          publish_branch: gh-pages
+          user_name: "GitHub Actions"
+          user_email: "actions@github.com"
