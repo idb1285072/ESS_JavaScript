@@ -1,0 +1,11 @@
+- `drop()`	Returns an iterator that skips a specified number of elements before yielding the rest
+- `take()`	Returns an iterator that yields a specified number of elements
+- `every()`	Returns true if all elements satisfy a test function
+- `some()`	Returns true if at least one element satisfy a test function
+- `filter()`	Returns an iterator containing elements that satisfy a filter function
+- `find()`	Returns the first element that satisfies a test function
+- `forEach()`	Executes a function once for each element in the iterator.
+- `from()`	creates an iterator object from an iterable
+- `reduce()`	Applies a reducer function against each element to reduce it to a single value
+- `map()`	Returns an iterator with all elements transformed by a map function
+- `flatMap()`	Returns an iterator by mapping each element and then flattening the results

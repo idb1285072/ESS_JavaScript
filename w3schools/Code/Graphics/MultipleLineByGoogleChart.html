@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Multi-Line Chart</title>
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
+  </head>
+  <body>
+    <div id="myChart" style="width: 100%; max-width: 700px; height: 500px"></div>
+
+    <script>
+      google.charts.load("current", { packages: ["corechart"] });
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        // Set Data (multiple lines)
+        const data = google.visualization.arrayToDataTable([
+          ["Square Meters", "City A", "City B"],
+          [50, 7, 5],
+          [60, 8, 6],
+          [70, 8, 6.5],
+          [80, 9, 7],
+          [90, 9, 8],
+          [100, 9, 9],
+          [110, 10, 10],
+          [120, 11, 10.5],
+          [130, 14, 11],
+          [140, 14, 12],
+          [150, 15, 13],
+        ]);
+
+        // Chart Options
+        const options = {
+          title: "House Prices vs. Size (City A vs City B)",
+          hAxis: { title: "Square Meters" },
+          vAxis: { title: "Price in Millions" },
+          curveType: "function",
+          legend: { position: "bottom" },
+        };
+
+        // Draw the chart
+        const chart = new google.visualization.LineChart(
+          document.getElementById("myChart")
+        );
+        chart.draw(data, options);
+      }
+    </script>
+  </body>
+</html>

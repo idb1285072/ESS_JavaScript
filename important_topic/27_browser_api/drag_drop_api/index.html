@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Professional Drag & Drop Task Board</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        background: #f0f2f5;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+      .board {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgb(0 0 0 / 0.1);
+        width: 600px;
+        max-width: 100%;
+        padding: 1.5rem;
+      }
+      .board-header {
+        text-align: center;
+        margin-bottom: 1rem;
+        font-weight: 700;
+        font-size: 1.5rem;
+        color: #212529;
+      }
+      .instructions {
+        font-size: 0.9rem;
+        color: #6c757d;
+        margin-bottom: 1rem;
+        text-align: center;
+      }
+      .task-list {
+        min-height: 250px;
+        border: 2px dashed #ced4da;
+        border-radius: 8px;
+        padding: 1rem;
+        background-color: #f8f9fa;
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+      }
+      .task-list.dragover {
+        background-color: #e2f0ff;
+        border-color: #0d6efd;
+      }
+      .task {
+        background: #0d6efd;
+        color: white;
+        border-radius: 6px;
+        padding: 0.6rem 1rem;
+        margin-bottom: 0.75rem;
+        cursor: grab;
+        user-select: none;
+        box-shadow: 0 2px 6px rgb(0 0 0 / 0.15);
+        transition: transform 0.2s ease;
+      }
+      .task.dragging {
+        opacity: 0.6;
+        cursor: grabbing;
+        transform: scale(1.05);
+        box-shadow: 0 6px 15px rgb(0 0 0 / 0.25);
+        z-index: 1000;
+        position: relative;
+      }
+      .alert-placeholder {
+        margin-top: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="board shadow-sm">
+      <div class="board-header">🚀 Task Board Drag & Drop</div>
+      <div class="instructions">
+        Drag tasks below and drop them to reorder or move into the list.
+      </div>
+
+      <div id="taskList" class="task-list" aria-label="Task list" tabindex="0">
+        <div class="task" draggable="true" id="task1">Design Homepage</div>
+        <div class="task" draggable="true" id="task2">Develop API</div>
+        <div class="task" draggable="true" id="task3">Write Documentation</div>
+        <div class="task" draggable="true" id="task4">Testing & QA</div>
+      </div>
+
+      <div id="alertPlaceholder" class="alert-placeholder"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      const taskList = document.getElementById("taskList");
+      const alertPlaceholder = document.getElementById("alertPlaceholder");
+      let draggedTask = null;
+
+      function showAlert(message, type = "success", timeout = 3000) {
+        alertPlaceholder.innerHTML = `
+        <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+          ${message}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      `;
+        if (timeout) {
+          setTimeout(() => {
+            const alert = bootstrap.Alert.getOrCreateInstance(
+              alertPlaceholder.querySelector(".alert")
+            );
+            alert.close();
+          }, timeout);
+        }
+      }
+
+      // Handle drag start
+      taskList.addEventListener("dragstart", (e) => {
+        if (e.target.classList.contains("task")) {
+          draggedTask = e.target;
+          e.target.classList.add("dragging");
+          e.dataTransfer.effectAllowed = "move";
+          e.dataTransfer.setData("text/plain", e.target.id);
+        }
+      });
+
+      // Handle drag end
+      taskList.addEventListener("dragend", (e) => {
+        if (draggedTask) {
+          draggedTask.classList.remove("dragging");
+          draggedTask = null;
+        }
+      });
+
+      // Allow dragover to enable dropping & highlight list
+      taskList.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        taskList.classList.add("dragover");
+
+        // Optional: show where the task will be dropped
+        const afterElement = getDragAfterElement(taskList, e.clientY);
+        if (afterElement == null) {
+          taskList.appendChild(draggedTask);
+        } else {
+          taskList.insertBefore(draggedTask, afterElement);
+        }
+      });
+
+      // Remove highlight on dragleave
+      taskList.addEventListener("dragleave", (e) => {
+        // Make sure leaving the whole taskList container, not child element
+        if (!taskList.contains(e.relatedTarget)) {
+          taskList.classList.remove("dragover");
+        }
+      });
+
+      // Handle drop
+      taskList.addEventListener("drop", (e) => {
+        e.preventDefault();
+        taskList.classList.remove("dragover");
+        showAlert(
+          `✔️ Moved task <strong>${draggedTask.textContent}</strong> successfully!`
+        );
+      });
+
+      // Helper function to find the element after which the dragged item should be inserted
+      function getDragAfterElement(container, y) {
+        const draggableElements = [
+          ...container.querySelectorAll(".task:not(.dragging)"),
+        ];
+
+        return draggableElements.reduce(
+          (closest, child) => {
+            const box = child.getBoundingClientRect();
+            const offset = y - box.top - box.height / 2;
+            if (offset < 0 && offset > closest.offset) {
+              return { offset: offset, element: child };
+            } else {
+              return closest;
+            }
+          },
+          { offset: Number.NEGATIVE_INFINITY }
+        ).element;
+      }
+    </script>
+  </body>
+</html>

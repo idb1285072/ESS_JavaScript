@@ -1,0 +1,7 @@
+- Declare `"use strict";` at the beginning of the script
+- Make easier to write **secure** JavaScript
+- Cannot use undeclared variables
+- Deleting a variable (or object) or a function is not allowed
+- Duplicating a parameter name is not allowed
+- Octal numeric literals are not allowed
+- The word `eval`, `arguments` cannot be used as variable

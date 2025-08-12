@@ -1,0 +1,8 @@
+<div class="card-body">
+  <h5 class="card-title">AJAX</h5>
+  <p class="card-text">AJAX is not a programming language.</p>
+  <p class="card-text">AJAX is a technique for accessing web servers from a web page.</p>
+  <p class="card-text">AJAX stands for Asynchronous JavaScript And XML.</p>
+  <a href="#" class="btn btn-primary">Details</a>
+</div>
+
