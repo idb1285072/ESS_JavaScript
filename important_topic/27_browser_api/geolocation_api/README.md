@@ -158,3 +158,5 @@ error => {
   }
 </script>
 ```
+Life project
+[geolocation](https://idb1285072.github.io/ESS_JavaScript/important_topic/27_browser_api/geolocation_api/)
