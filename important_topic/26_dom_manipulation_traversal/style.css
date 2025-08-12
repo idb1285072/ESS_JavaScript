@@ -1,0 +1,12 @@
+.page {
+  display: none;
+}
+.page.active {
+  display: block;
+}
+img.employee-pic {
+  max-width: 30px;
+  max-height: 30px;
+  object-fit: cover;
+  border-radius: 50%;
+}

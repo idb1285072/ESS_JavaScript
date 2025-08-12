@@ -111,3 +111,5 @@ dropZone.addEventListener("drop", (e) => {
 * **Avoid dragging sensitive data** without user awareness.
 
 
+Life project
+[drag & drop](https://idb1285072.github.io/ESS_JavaScript/important_topic/27_browser_api/drag_drop_api/)

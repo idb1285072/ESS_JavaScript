@@ -1,0 +1,30 @@
+{
+  "name": "ess_javascript",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy:cookie": "gh-pages -d important_topic/19_cookie/cookie -b gh-pages -d important_topic/19_cookie/cookie --dest important_topic/19_cookie/cookie",
+    "deploy:geolocation": "gh-pages -d important_topic/27_browser_api/geolocation_api -b gh-pages -d important_topic/27_browser_api/geolocation_api --dest important_topic/27_browser_api/geolocation_api",
+    "deploy:drag_drop": "gh-pages -d important_topic/27_browser_api/drag_drop_api -b gh-pages -d important_topic/27_browser_api/drag_drop_api --dest important_topic/27_browser_api/drag_drop_api",
+    "deploy:clipboard": "gh-pages -d important_topic/27_browser_api/clipboard_api -b gh-pages -d important_topic/27_browser_api/clipboard_api --dest important_topic/27_browser_api/clipboard_api",
+    "deploy:dom": "gh-pages -d important_topic/26_dom_manipulation_traversal -b gh-pages -d important_topic/26_dom_manipulation_traversal --dest important_topic/26_dom_manipulation_traversal",
+    "deploy:all": "npm run deploy:cookie && npm run deploy:geolocation && npm run deploy:drag_drop && npm run deploy:clipboard"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/idb1285072/ESS_JavaScript.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/idb1285072/ESS_JavaScript/issues"
+  },
+  "homepage": "https://github.com/idb1285072/ESS_JavaScript#readme",
+  "devDependencies": {
+    "gh-pages": "^6.3.0"
+  }
+}
