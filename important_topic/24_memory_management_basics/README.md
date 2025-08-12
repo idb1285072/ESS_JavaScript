@@ -11,7 +11,7 @@ Memory management is the process by which JavaScript allocates space in memory f
 
 ## 1. **Memory Allocation**
 
-When you create variables, objects, arrays, functions, etc., JavaScript automatically allocates memory space to store this data.
+When you create variables, objects, arrays, functions, etc., JavaScript **automatically allocates memory space** to store this data.
 
 - **Primitive types** (like numbers, strings, booleans) are usually stored in the **stack** — a simple and fast region of memory.
 - **Objects, arrays, functions** are stored in the **heap** — a larger and more complex memory area for dynamic data.
@@ -81,6 +81,13 @@ button.addEventListener("click", handleClick);
 // Later, the button is removed from DOM
 button.remove(); // But the event listener is still active!
 </script>
+```
+
+The fix
+
+```js
+button.removeEventListener("click", handleClick);
+button.remove();
 ```
 
 Common causes:

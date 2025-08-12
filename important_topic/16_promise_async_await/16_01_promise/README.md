@@ -1,6 +1,7 @@
 # Promise
 
-A Promise in JavaScript is an object that represents the eventual completion (or failure) of an asynchronous operation, and the value it produces.
+A Promise in JavaScript is an object that represents the eventual completion/success
+ (or failure) of an asynchronous operation, and the value it produces.
 
 Think of it as a placeholder for a value that you don’t have yet, but will get in the future.
 
@@ -8,9 +9,9 @@ Think of it as a placeholder for a value that you don’t have yet, but will get
 
 A promise can be in one of these states:
 
-1. Pending- initial state, operation is running
-2. Fulfilled (or Resolved) - operation completed successfully and the Promise now holds a resulting value
-3. rejected - operation failed and the Promise holds an error
+1. **Pending**- **initial state**, **operation is running**
+2. **Fulfilled** (or Resolved) - **operation completed successfully** and the Promise now holds a resulting value
+3. **Rejected** - **operation failed** and the Promise holds an error
 
 ## Why Promise?
 
@@ -132,3 +133,28 @@ Promise.any([
 - `Promise.allSettled()` Runs multiple promises in parallel, but always waits for all to finish, giving results for both successes and failures.
 - `Promise.race()` Resolves or rejects as soon as any one of the promises settles (first one wins).
 - `Promise.any()` Resolves as soon as any one promise fulfills (ignores rejections unless all reject).
+
+
+## an async function that retries a failing Promise up to 3 times before finally reject
+```js
+async function retryAsync(fn, retries = 3, delay = 500) {
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      return await fn(); // Try executing the async function
+    } catch (err) {
+      if (attempt === retries) throw err; // Final failure
+      await new Promise(res => setTimeout(res, delay)); // Wait before retry
+    }
+  }
+}
+
+let count = 0;
+const unstableTask = async () => {
+  count++;
+  if (count < 3) throw new Error("Failed attempt " + count);
+  return "Success on attempt " + count;
+};
+retryAsync(unstableTask)
+  .then(console.log)
+  .catch(console.error);
+```

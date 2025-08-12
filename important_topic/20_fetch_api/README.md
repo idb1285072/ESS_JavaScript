@@ -1,15 +1,14 @@
 # Fetch API
 
-The **Fetch API** is a modern JavaScript interface that allows you to **make HTTP requests** (GET, POST, PUT, DELETE, etc.) from the browser to a server.
-
-It’s a **replacement for XMLHttpRequest** (XHR) and uses **Promises**, making code cleaner and easier to work with.
+- The Fetch API is a modern, built-in browser interface for making HTTP requests (replace XMLHttpRequest) from browser to server.
+- Returns a Promise - always asynchronous
 
 ---
 
 ## Basic Syntax of `fetch`
 
 ```js
-fetch(url, options)
+fetch(url, options?)
   .then(response => {
     // handle response
   })
@@ -18,51 +17,51 @@ fetch(url, options)
   });
 ```
 
-* **`url`**: The URL you are fetching data from.
-* **`options`** *(optional)*: An object to configure method, headers, body, etc.
+- **`url`**: The URL you are fetching data from.
+- **`options`** _(optional)_: An object to configure method, headers, body, etc.
 
 ---
 
 ## Example 1: Basic GET Request
 
 ```js
-fetch('https://api.example.com/users')
-  .then(response => response.json())
-  .then(data => {
+fetch("https://api.example.com/users")
+  .then((response) => response.json())
+  .then((data) => {
     console.log(data); // JSON data from server
   })
-  .catch(error => {
-    console.error('Fetch error:', error);
+  .catch((error) => {
+    console.error("Fetch error:", error);
   });
 ```
 
 ### Explanation:
 
-* `fetch()` sends a GET request by default.
-* `.json()` parses the JSON response.
-* `.catch()` handles network or connection errors.
+- `fetch()` sends a GET request by default.
+- `.json()` parses the JSON response.
+- `.catch()` handles network or connection errors.
 
 ---
 
 ## Example 2: POST Request (Send Data)
 
 ```js
-fetch('https://api.example.com/users', {
-  method: 'POST',
+fetch("https://api.example.com/users", {
+  method: "POST",
   headers: {
-    'Content-Type': 'application/json'
+    "Content-Type": "application/json",
   },
   body: JSON.stringify({
-    name: 'John Doe',
-    email: 'john@example.com'
-  })
+    name: "John Doe",
+    email: "john@example.com",
+  }),
 })
-  .then(response => response.json())
-  .then(data => {
-    console.log('User created:', data);
+  .then((response) => response.json())
+  .then((data) => {
+    console.log("User created:", data);
   })
-  .catch(error => {
-    console.error('Error:', error);
+  .catch((error) => {
+    console.error("Error:", error);
   });
 ```
 
@@ -88,26 +87,26 @@ You can customize requests using the second argument of `fetch(url, options)`.
 
 After a fetch, the `.then(response => ...)` receives a **Response object** with methods like:
 
-* `response.ok`: `true` if status is 200–299
-* `response.status`: HTTP status code
-* `response.json()`: Parse response body as JSON
-* `response.text()`: Parse response body as plain text
-* `response.blob()`: For files/images
+- `response.ok`: `true` if status is 200–299
+- `response.status`: HTTP status code
+- `response.json()`: Parse response body as JSON
+- `response.text()`: Parse response body as plain text
+- `response.blob()`: For files/images
 
 ---
 
 ### Example: Checking Status Before Parsing
 
 ```js
-fetch('https://api.example.com/data')
-  .then(response => {
+fetch("https://api.example.com/data")
+  .then((response) => {
     if (!response.ok) {
-      throw new Error('HTTP error ' + response.status);
+      throw new Error("HTTP error " + response.status);
     }
     return response.json();
   })
-  .then(data => console.log(data))
-  .catch(error => console.error('Fetch error:', error));
+  .then((data) => console.log(data))
+  .catch((error) => console.error("Fetch error:", error));
 ```
 
 ---
@@ -115,14 +114,14 @@ fetch('https://api.example.com/data')
 ## Example: PUT Request
 
 ```js
-fetch('https://api.example.com/user/123', {
-  method: 'PUT',
+fetch("https://api.example.com/user/123", {
+  method: "PUT",
   headers: {
-    'Content-Type': 'application/json'
+    "Content-Type": "application/json",
   },
   body: JSON.stringify({
-    name: 'Updated Name'
-  })
+    name: "Updated Name",
+  }),
 });
 ```
 
@@ -131,11 +130,11 @@ fetch('https://api.example.com/user/123', {
 ## Example: DELETE Request
 
 ```js
-fetch('https://api.example.com/user/123', {
-  method: 'DELETE'
+fetch("https://api.example.com/user/123", {
+  method: "DELETE",
 })
-  .then(res => res.json())
-  .then(data => console.log('Deleted:', data));
+  .then((res) => res.json())
+  .then((data) => console.log("Deleted:", data));
 ```
 
 ---
@@ -145,10 +144,10 @@ fetch('https://api.example.com/user/123', {
 ### Example: Send token in headers
 
 ```js
-fetch('https://api.example.com/secure-data', {
+fetch("https://api.example.com/secure-data", {
   headers: {
-    'Authorization': 'Bearer your_token_here'
-  }
+    Authorization: "Bearer your_token_here",
+  },
 });
 ```
 
@@ -158,8 +157,8 @@ fetch('https://api.example.com/secure-data', {
 
 If your front-end tries to fetch data from a different domain (API server), you'll run into **CORS** (Cross-Origin Resource Sharing) rules.
 
-* **If server allows** it (via headers like `Access-Control-Allow-Origin`), the request works.
-* If **not**, the browser **blocks the response**.
+- **If server allows** it (via headers like `Access-Control-Allow-Origin`), the request works.
+- If **not**, the browser **blocks the response**.
 
 ---
 
@@ -168,14 +167,14 @@ If your front-end tries to fetch data from a different domain (API server), you'
 ```js
 async function loadData() {
   try {
-    const response = await fetch('https://api.example.com/data');
+    const response = await fetch("https://api.example.com/data");
     if (!response.ok) {
-      throw new Error('Failed: ' + response.status);
+      throw new Error("Failed: " + response.status);
     }
     const data = await response.json();
     console.log(data);
   } catch (error) {
-    console.error('Error:', error);
+    console.error("Error:", error);
   }
 }
 ```
@@ -185,11 +184,59 @@ async function loadData() {
 ## Fetching Files (e.g. image)
 
 ```js
-fetch('image.jpg')
-  .then(res => res.blob())
-  .then(blob => {
-    const img = document.createElement('img');
+fetch("image.jpg")
+  .then((res) => res.blob())
+  .then((blob) => {
+    const img = document.createElement("img");
     img.src = URL.createObjectURL(blob);
     document.body.appendChild(img);
   });
+```
+
+---
+
+# Content Type
+
+```js
+fetch("/api/data", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json", // tells server to parse as JSON
+    Accept: "application/json",
+  },
+  body: JSON.stringify({ name: "John", age: 30 }),
+});
+```
+
+```js
+const formData = new FormData();
+formData.append("file", fileInput.files[0]);
+
+fetch("/upload", {
+  method: "POST",
+  body: formData, // Content-Type set automatically
+});
+```
+
+- If you send JSON → set Content-Type: `application/json` and `JSON.stringify()` the body.
+- If you send form data → don’t set Content-Type manually.
+
+## Options
+```js
+fetch('https://api.example.com/data', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer token123'
+  },
+  body: JSON.stringify({ name: 'John' }),//string, FormData, Blob, ArrayBuffer, URLSerchParams, etc
+  mode: 'cors', //no-cors, same-origin
+  credentials: 'include',
+  cache: 'no-cache',
+  redirect: 'follow',
+  referrer: 'https://mysite.com',
+  referrerPolicy: 'no-referrer-when-downgrade',
+  integrity: 'sha256-abc123...',
+  keepalive: true
+});
 ```

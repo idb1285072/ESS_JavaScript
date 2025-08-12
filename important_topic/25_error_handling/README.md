@@ -101,56 +101,39 @@ This prevents the program from continuing in an invalid state.
 ## Example
 
 ```js
-// Simulated API call function that may fail or return bad data
 function fetchUserData(userId) {
   if (!userId) {
     throw new Error("User ID is required");
   }
-
-  // Simulate API response (this would be async in real life)
   const fakeApiResponse = {
     id: userId,
     name: "Alice",
     age: 30,
     email: "alice@example.com",
   };
-
-  // Simulate invalid data
   if (fakeApiResponse.age < 0) {
     throw new RangeError("Age cannot be negative");
   }
-
   return fakeApiResponse;
 }
 
-// Main function to get user info and process it
 function getUserInfo(userId) {
   try {
     console.log("Starting to fetch user data...");
-
     const user = fetchUserData(userId);
-
     console.log("User fetched:", user);
-
     if (!user.email.includes("@")) {
-      // Custom validation check, throw if invalid
       throw new Error("Invalid email address");
     }
-
     console.log("User data is valid!");
-
     return user;
   } catch (error) {
-    // Handle all errors here
     console.error("Error occurred:", error.message);
-    // Could return fallback value or rethrow, depending on need
   } finally {
-    // Runs always, cleanup or final logging
     console.log("Finished fetching user data.");
   }
 }
 
-// Test cases:
 getUserInfo("123"); // Successful case
 getUserInfo(""); // Throws error for missing ID
 ```

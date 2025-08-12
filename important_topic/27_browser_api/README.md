@@ -1,8 +1,23 @@
 # Browser APIs
 
+Browser APIs are built-in interfaces provided by web browsers that let JavaScript interact with the browser and the device.
+
+They allow you to do things like:
+
+- Manipulate the DOM (Document Object Model)
+- Handle user events (clicks, keypresses)
+- Store data locally (LocalStorage, IndexedDB)
+- Work with multimedia (Audio, Video)
+- Use device features (geolocation, camera, clipboard)
+- Communicate over the network (Fetch, WebSockets)
+
+They’re not part of JavaScript itself — they’re extra capabilities the browser exposes.
+
+---
+
 ## Geolocation API
 
-The Geolocation API is a Browser API that lets web applications request the device’s physical location.
+The Geolocation API is a Browser API that lets web applications request the **device’s physical location**.
 
 ```js
 navigator.geolocation.getCurrentPosition(
@@ -69,4 +84,3 @@ setTimeout(() => {
 ## Clipboard API
 
 ## Drag and Drop API
-
