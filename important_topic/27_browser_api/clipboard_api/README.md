@@ -123,6 +123,5 @@ document.getElementById("pasteBtn").addEventListener("click", () => {
 });
 </script>
 ```
-
----
-
+Life project
+[clipboard](https://idb1285072.github.io/ESS_JavaScript/important_topic/27_browser_api/clipboard_api/)
