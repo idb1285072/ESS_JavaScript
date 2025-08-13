@@ -1,0 +1,15 @@
+# General Naming Rules
+- **camelCase** for regular function
+- **PascalCase** for constructor function
+- **Descriptive** and **Specific**
+- Avoid **Abbreviations** (Unless Universal)
+- **Verb-Noun Pattern**
+  - `getUserData()`
+  - `updateCartItem()`
+  - `calculateDiscount()`
+  - `validateFormInput()`
+- Boolean Function (return `true` or `false`) - yes/no question (is, has, can, should)
+  - `isUserLoggedIn()`
+  - `hasPermission()`
+  - `canAccessPage()`
+  - `shouldDisplayBanner()`
