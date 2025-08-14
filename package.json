@@ -10,7 +10,9 @@
     "deploy:drag_drop": "gh-pages -d important_topic/27_browser_api/drag_drop_api -b gh-pages -d important_topic/27_browser_api/drag_drop_api --dest important_topic/27_browser_api/drag_drop_api",
     "deploy:clipboard": "gh-pages -d important_topic/27_browser_api/clipboard_api -b gh-pages -d important_topic/27_browser_api/clipboard_api --dest important_topic/27_browser_api/clipboard_api",
     "deploy:dom": "gh-pages -d important_topic/26_dom_manipulation_traversal -b gh-pages -d important_topic/26_dom_manipulation_traversal --dest important_topic/26_dom_manipulation_traversal",
-    "deploy:all": "npm run deploy:cookie && npm run deploy:geolocation && npm run deploy:drag_drop && npm run deploy:clipboard"
+    "deploy:web_history": "gh-pages -d important_topic/problems/feedback_problems_02/web_history -b gh-pages -d important_topic/problems/feedback_problems_02/web_history --dest important_topic/problems/feedback_problems_02/web_history",
+    "deploy:debounce": "gh-pages -d important_topic/problems/feedback_problems_02/debounce -b gh-pages -d important_topic/problems/feedback_problems_02/debounce --dest important_topic/problems/feedback_problems_02/debounce",
+    "deploy:all": "npm run deploy:cookie && npm run deploy:geolocation && npm run deploy:drag_drop && npm run deploy:clipboard && npm run deploy:dom && npm run deploy:web_history && npm run deploy:debounce"
   },
   "repository": {
     "type": "git",
