@@ -8,34 +8,34 @@ const users = [
 ];
 
 const bookingStatus = [
-  { day: 1, userId: 4, status: "Booked" },
+  { day: 1, status: "Available" },
   { day: 2, status: "Available" },
-  { day: 3 },
-  { day: 4, userId: 2, status: "Booked" },
+  { day: 3, status: "Available" },
+  { day: 4, status: "Available" },
   { day: 5, status: "Available" },
-  { day: 6, userId: 7, status: "Booked" },
-  { day: 7 },
-  { day: 8, userId: 1, status: "Booked" },
+  { day: 6, status: "Available" },
+  { day: 7, status: "Available" },
+  { day: 8, status: "Available" },
   { day: 9, status: "Available" },
-  { day: 10 },
-  { day: 11, userId: 9, status: "Booked" },
+  { day: 10, status: "Available" },
+  { day: 11, status: "Available" },
   { day: 12, status: "Available" },
-  { day: 13 },
-  { day: 14, userId: 3, status: "Booked" },
+  { day: 13, status: "Available" },
+  { day: 14, status: "Available" },
   { day: 15, status: "Available" },
-  { day: 16 },
-  { day: 17, userId: 6, status: "Booked" },
+  { day: 16, status: "Available" },
+  { day: 17, status: "Available" },
   { day: 18, status: "Available" },
-  { day: 19 },
-  { day: 20, userId: 8, status: "Booked" },
+  { day: 19, status: "Available" },
+  { day: 20, status: "Available" },
   { day: 21, status: "Available" },
-  { day: 22 },
-  { day: 23, userId: 5, status: "Booked" },
+  { day: 22, status: "Available" },
+  { day: 23, status: "Available" },
   { day: 24, status: "Available" },
-  { day: 25 },
-  { day: 26, userId: 10, status: "Booked" },
+  { day: 25, status: "Available" },
+  { day: 26, status: "Available" },
   { day: 27, status: "Available" },
-  { day: 28 },
+  { day: 28, status: "Available" },
 ];
 
 if (!localStorage.getItem("users")) {
@@ -85,9 +85,9 @@ function login(username, password) {
     const token = generateToken();
     setCookie("auth_token", token, 30);
     localStorage.setItem("currentUser", JSON.stringify(user));
-    window.location.href = "calendar.html"; // redirect to calendar
+    window.location.href = "calendar.html";
   } else {
-    alert("Invalid username or password ❌");
+    alert("Invalid username or password");
   }
 }
 function logout() {
@@ -120,68 +120,24 @@ if (document.getElementById("calendar-body")) {
   const calendarBody = document.getElementById("calendar-body");
   console.log(statusList);
   const totalDays = 28;
-  const startDay = 4; // Thu (Sun=0)
+  const startDay = 4;
 
   function renderCalendar() {
     calendarBody.innerHTML = "";
     let day = 1;
     let row = document.createElement("tr");
 
-    // empty cells before first day
     for (let i = 0; i < startDay; i++) {
       row.appendChild(emptyCell());
     }
 
-    // while (day <= totalDays) {
-    //   if (row.children.length === 7) {
-    //     calendarBody.appendChild(row);
-    //     row = document.createElement("tr");
-    //   }
-
-    //   const cell = document.createElement("td");
-    //   const wrapper = document.createElement("div");
-    //   wrapper.classList.add("d-flex", "flex-column", "align-items-center");
-
-    //   const btn = document.createElement("button");
-    //   btn.textContent = day;
-    //   btn.style.width = "100%";
-    //   btn.style.borderRadius = ".75rem";
-
-    //   const statusLabel = document.createElement("small");
-    //   statusLabel.classList.add("fw-bold", "mt-1");
-
-    //   const dayStatus = statusList.find(d => d.day === day);
-
-    //   if (dayStatus && dayStatus.status === "Booked") {
-    //     btn.classList.add("booked");
-    //     btn.disabled = true;
-    //     const user = users.find(u => u.id === dayStatus.userId);
-    //     const username = user ? user.username : "Unknown";
-    //     btn.textContent = day + " 🔒";
-    //     statusLabel.textContent = "Booked by " + username;
-    //     statusLabel.classList.add("text-danger");
-    //   } else {
-    //     btn.classList.add("available");
-    //     // console.log(day);
-    //     btn.addEventListener("click", () => bookDate(day));
-    //     statusLabel.textContent = "Available";
-    //     statusLabel.classList.add("text-success");
-    //   }
-
-    //   wrapper.appendChild(btn);
-    //   wrapper.appendChild(statusLabel);
-    //   cell.appendChild(wrapper);
-    //   row.appendChild(cell);
-    //   day++;
-    // }
     while (day <= totalDays) {
       if (row.children.length === 7) {
         calendarBody.appendChild(row);
         row = document.createElement("tr");
       }
 
-      const currentDay = day; // Fix: Capture current day in block scope
-
+      const currentDay = day;
       const cell = document.createElement("td");
       const wrapper = document.createElement("div");
       wrapper.classList.add("d-flex", "flex-column", "align-items-center");
@@ -195,8 +151,18 @@ if (document.getElementById("calendar-body")) {
       statusLabel.classList.add("fw-bold", "mt-1");
 
       const dayStatus = statusList.find((d) => d.day === currentDay);
-
-      if (dayStatus && dayStatus.status === "Booked") {
+      const todayDate = new Date();
+      const today = todayDate.getDate();
+      console.log(today);
+      if (day < today) {
+        console.log(day, today);
+        btn.classList.add("booked");
+        btn.disabled = true;
+        btn.textContent = currentDay + " 🔒";
+        statusLabel.textContent = "Unavailable";
+        statusLabel.classList.add("text-danger");
+      }
+      else if(dayStatus && dayStatus.status === "Booked") {
         btn.classList.add("booked");
         btn.disabled = true;
         const user = users.find((u) => u.id === dayStatus.userId);
@@ -206,7 +172,7 @@ if (document.getElementById("calendar-body")) {
         statusLabel.classList.add("text-danger");
       } else {
         btn.classList.add("available");
-        btn.addEventListener("click", () => bookDate(currentDay)); // Use currentDay here
+        btn.addEventListener("click", () => bookDate(currentDay));
         statusLabel.textContent = "Available";
         statusLabel.classList.add("text-success");
       }
