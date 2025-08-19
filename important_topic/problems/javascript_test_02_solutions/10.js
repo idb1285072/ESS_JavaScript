@@ -1,0 +1,1 @@
+console.log([..."hello"].reduce((a, c)=>a+c.charCodeAt(0), 0)); // 532
