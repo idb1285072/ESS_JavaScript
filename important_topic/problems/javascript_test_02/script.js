@@ -130,8 +130,11 @@ if (document.getElementById("calendar-body")) {
     const year = displayedDate.getFullYear();
     const month = displayedDate.getMonth();
     const todayDate = new Date();
-    // prevMonthBtn.disabled =
-    // month === todayDate.getMonth() && year === todayDate.getFullYear();
+
+    // disabled previous button
+    prevMonthBtn.disabled =
+    month === todayDate.getMonth() && year === todayDate.getFullYear();
+
     const totalDays = new Date(year, month + 1, 0).getDate();
     const startDay = new Date(year, month, 1).getDay();
 
@@ -215,11 +218,12 @@ if (document.getElementById("calendar-body")) {
   }
 
   function bookDate(day, month, year) {
-    if (statusList.some((d) => d.userId === currentUser.id)) {
-      return alert(
-        "You already have a booking. Cancel it before booking a new date."
-      );
-    }
+    // one user can book max one date
+    // if (statusList.some((d) => d.userId === currentUser.id)) {
+    //   return alert(
+    //     "You already have a booking. Cancel it before booking a new date."
+    //   );
+    // }
 
     const newBooking = {
       day,
