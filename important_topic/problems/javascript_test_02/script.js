@@ -225,6 +225,13 @@ if (document.getElementById("calendar-body")) {
     //   );
     // }
 
+    // if pending then not booked another
+    if (statusList.some((d) => d.userId === currentUser.id && d.status==='Pending')) {
+      return alert(
+        "You already have a booking. Cancel it before booking a new date."
+      );
+    }
+
     const newBooking = {
       day,
       month,
