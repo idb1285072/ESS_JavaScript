@@ -9,7 +9,16 @@ const DEFAULT_USERS = [
 ];
 
 initLocalStorage("users", DEFAULT_USERS);
-initLocalStorage("status", []);
+initLocalStorage("status", [
+  {
+    day: 2,
+    month: 6,
+    year: 2025,
+    userId: 4,
+    status: "Confirmed",
+    timestamp: 1755682257258,
+  },
+]);
 
 // ================== Local Storage Helpers ==================
 function initLocalStorage(key, defaultValue) {
@@ -122,8 +131,8 @@ if (document.getElementById("calendar-body")) {
     const month = displayedDate.getMonth();
     const todayDate = new Date();
 
-    prevMonthBtn.disabled =
-      month === todayDate.getMonth() && year === todayDate.getFullYear();
+    // prevMonthBtn.disabled =
+    // month === todayDate.getMonth() && year === todayDate.getFullYear();
 
     const totalDays = new Date(year, month + 1, 0).getDate();
     const startDay = new Date(year, month, 1).getDay();
@@ -160,37 +169,36 @@ if (document.getElementById("calendar-body")) {
       (d) => d.day === day && d.month === month && d.year === year
     );
     const isWeekend = [0, 6].includes(new Date(year, month, day).getDay());
-    const isPastDay =
-      todayDate.getMonth() === month &&
-      todayDate.getFullYear() === year &&
-      day < todayDate.getDate();
+    const isPastDay = new Date(year, month, day) < todayDate;
 
-    if (
-      isPastDay ||
-      isWeekend ||
-      ["Confirmed", "Pending"].includes(dayStatus?.status)
-    ) {
+    // Booked or pending days always show their status
+    if (dayStatus?.status === "Confirmed") {
       btn.disabled = true;
       btn.className = "booked";
-
-      if (dayStatus?.status === "Confirmed") {
-        btn.textContent = `${day} 🔒`;
-        label.textContent = `Confirmed by ${
-          users.find((u) => u.id === dayStatus.userId)?.username || "Unknown"
-        }`;
-        label.classList.add("text-danger");
-      } else if (dayStatus?.status === "Pending") {
-        btn.textContent = `${day} ⏳`;
-        label.textContent = `Pending approval for ${
-          users.find((u) => u.id === dayStatus.userId)?.username || "Unknown"
-        }`;
-        label.classList.add("text-warning");
-      } else {
-        btn.textContent = `${day} 🔒`;
-        label.textContent = isWeekend ? "Weekend" : "Unavailable";
-        label.classList.add("text-danger");
-      }
-    } else {
+      btn.textContent = `${day} 🔒`;
+      label.textContent = `Confirmed by ${
+        users.find((u) => u.id === dayStatus.userId)?.username || "Unknown"
+      }`;
+      label.classList.add("text-danger");
+    } else if (dayStatus?.status === "Pending") {
+      btn.disabled = true;
+      btn.className = "booked";
+      btn.textContent = `${day} ⏳`;
+      label.textContent = `Pending approval for ${
+        users.find((u) => u.id === dayStatus.userId)?.username || "Unknown"
+      }`;
+      label.classList.add("text-warning");
+    }
+    // Past or weekend days without booking are unavailable
+    else if (isPastDay || isWeekend) {
+      btn.disabled = true;
+      btn.className = "booked";
+      btn.textContent = `${day} 🔒`;
+      label.textContent = isWeekend ? "Weekend" : "Unavailable";
+      label.classList.add("text-danger");
+    }
+    // Available days
+    else {
       btn.className = "available";
       btn.addEventListener("click", () => bookDate(day, month, year));
       label.textContent = "Available";
