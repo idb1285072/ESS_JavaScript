@@ -14,7 +14,7 @@ initLocalStorage("status", [
     day: 2,
     month: 6,
     year: 2025,
-    userId: 4,
+    userId: 3,
     status: "Confirmed",
     timestamp: 1755682257258,
   },
@@ -131,8 +131,9 @@ if (document.getElementById("calendar-body")) {
     const month = displayedDate.getMonth();
     const todayDate = new Date();
 
-    // prevMonthBtn.disabled =
-    // month === todayDate.getMonth() && year === todayDate.getFullYear();
+    // disabled previous button
+    prevMonthBtn.disabled =
+    month === todayDate.getMonth() && year === todayDate.getFullYear();
 
     const totalDays = new Date(year, month + 1, 0).getDate();
     const startDay = new Date(year, month, 1).getDay();
@@ -217,7 +218,15 @@ if (document.getElementById("calendar-body")) {
   }
 
   function bookDate(day, month, year) {
-    if (statusList.some((d) => d.userId === currentUser.id)) {
+    // one user can book max one date
+    // if (statusList.some((d) => d.userId === currentUser.id)) {
+    //   return alert(
+    //     "You already have a booking. Cancel it before booking a new date."
+    //   );
+    // }
+
+    // if pending then not booked another
+    if (statusList.some((d) => d.userId === currentUser.id && d.status==='Pending')) {
       return alert(
         "You already have a booking. Cancel it before booking a new date."
       );
