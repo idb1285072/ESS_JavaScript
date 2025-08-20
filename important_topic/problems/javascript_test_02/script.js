@@ -1,5 +1,5 @@
-// === User Setup ===
-const users = [
+// ================== User Setup ==================
+const DEFAULT_USERS = [
   { id: 0, username: "admin", password: "@admin123" },
   { id: 1, username: "user1", password: "@user1" },
   { id: 2, username: "user2", password: "@user2" },
@@ -7,63 +7,63 @@ const users = [
   { id: 4, username: "user4", password: "@user4" },
   { id: 5, username: "user5", password: "@user5" },
 ];
-const bookingStatus = [];
 
-if (!localStorage.getItem("users")) {
-  localStorage.setItem("users", JSON.stringify(users));
+initLocalStorage("users", DEFAULT_USERS);
+initLocalStorage("status", []);
+
+// ================== Local Storage Helpers ==================
+function initLocalStorage(key, defaultValue) {
+  if (!localStorage.getItem(key)) {
+    localStorage.setItem(key, JSON.stringify(defaultValue));
+  }
+}
+function getLocal(key) {
+  return JSON.parse(localStorage.getItem(key)) || [];
+}
+function setLocal(key, value) {
+  localStorage.setItem(key, JSON.stringify(value));
 }
 
-if (!localStorage.getItem("status")) {
-  localStorage.setItem("status", JSON.stringify(bookingStatus));
-}
-
-// === Cookie Helpers ===
+// ================== Cookie Helpers ==================
 function generateToken(length = 32) {
   const chars =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  let token = "";
-  for (let i = 0; i < length; i++) {
-    token += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return token;
+  return Array.from(
+    { length },
+    () => chars[Math.floor(Math.random() * chars.length)]
+  ).join("");
 }
 function setCookie(name, value, minutes) {
-  const d = new Date();
-  d.setTime(d.getTime() + minutes * 60 * 1000);
-  document.cookie = `${name}=${value};expires=${d.toUTCString()};path=/`;
+  const expires = new Date(Date.now() + minutes * 60000).toUTCString();
+  document.cookie = `${name}=${value};expires=${expires};path=/`;
 }
 function getCookie(name) {
-  const cname = name + "=";
-  const ca = document.cookie.split(";");
-  for (let c of ca) {
-    while (c.charAt(0) === " ") c = c.substring(1);
-    if (c.indexOf(cname) === 0) return c.substring(cname.length);
-  }
-  return "";
+  return (
+    document.cookie
+      .split(";")
+      .map((c) => c.trim())
+      .find((c) => c.startsWith(name + "="))
+      ?.split("=")[1] || ""
+  );
 }
 function eraseCookie(name) {
-  document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
 }
 
-// === Auth Functions ===
+// ================== Auth ==================
 function login(username, password) {
-  const users = JSON.parse(localStorage.getItem("users")) || [];
-  const user = users.find(
+  const user = getLocal("users").find(
     (u) => u.username === username && u.password === password
   );
 
-  if (user) {
-    const token = generateToken();
-    setCookie("auth_token", token, 30);
-    localStorage.setItem("currentUser", JSON.stringify(user));
-    if (user.username === "admin") {
-      window.location.href = "admin.html";
-    } else {
-      window.location.href = "calendar.html";
-    }
-  } else {
-    alert("Invalid username or password");
-  }
+  if (!user) return alert("Invalid username or password");
+
+  const token = generateToken();
+  setCookie("auth_token", token, 30);
+  setLocal("currentUser", user);
+
+  window.location.href =
+    user.username === "admin" ? "admin.html" : "calendar.html";
 }
 function logout() {
   eraseCookie("auth_token");
@@ -74,47 +74,44 @@ function isLoggedIn() {
   return getCookie("auth_token") && localStorage.getItem("currentUser");
 }
 
-// === Login Page Script ===
+// ================== Login Page ==================
 if (document.getElementById("login")) {
   document.getElementById("login").addEventListener("click", () => {
-    const username = document.getElementById("username").value.trim();
-    const password = document.getElementById("password").value.trim();
-    login(username, password);
+    login(
+      document.getElementById("username").value.trim(),
+      document.getElementById("password").value.trim()
+    );
   });
 }
 
-// === Calendar Page Script ===
+// ================== Calendar Page ==================
 if (document.getElementById("calendar-body")) {
-  if (!isLoggedIn()) {
-    window.location.href = "index.html";
-  }
+  if (!isLoggedIn()) window.location.href = "index.html";
 
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-  const users = JSON.parse(localStorage.getItem("users")) || [];
-  let statusList = JSON.parse(localStorage.getItem("status")) || [];
+  const users = getLocal("users");
   const calendarBody = document.getElementById("calendar-body");
-
-  // Track displayed month and year
+  let statusList = getLocal("status");
   let displayedDate = new Date();
 
-  // Add Next Month button
-  const nextMonthBtn = document.getElementById("next-month");
-  nextMonthBtn.addEventListener("click", () => {
-    displayedDate.setMonth(displayedDate.getMonth() + 1);
-    renderCalendar();
-  });
-
-  // Add Previous Month button
   const prevMonthBtn = document.getElementById("prev-month");
-  prevMonthBtn.addEventListener("click", () => {
-    displayedDate.setMonth(displayedDate.getMonth() - 1);
+  const nextMonthBtn = document.getElementById("next-month");
+
+  prevMonthBtn.addEventListener("click", () => changeMonth(-1));
+  nextMonthBtn.addEventListener("click", () => changeMonth(1));
+  document.getElementById("logout").addEventListener("click", logout);
+
+  function changeMonth(step = 0) {
+    displayedDate.setMonth(displayedDate.getMonth() + step);
     renderCalendar();
-  });
+  }
 
   function updateCalendarTitle() {
-    const title = document.getElementById("calendar-title");
-    const options = { month: "long", year: "numeric" };
-    title.textContent = displayedDate.toLocaleDateString("en-US", options);
+    document.getElementById("calendar-title").textContent =
+      displayedDate.toLocaleDateString("en-US", {
+        month: "long",
+        year: "numeric",
+      });
   }
 
   function renderCalendar() {
@@ -123,138 +120,120 @@ if (document.getElementById("calendar-body")) {
 
     const year = displayedDate.getFullYear();
     const month = displayedDate.getMonth();
-
-    // Check if we are at the real current month
     const todayDate = new Date();
-    const isAtCurrentMonth =
-      displayedDate.getMonth() === todayDate.getMonth() &&
-      displayedDate.getFullYear() === todayDate.getFullYear();
 
-    // Disable prev button if on current month
-    prevMonthBtn.disabled = isAtCurrentMonth;
+    prevMonthBtn.disabled =
+      month === todayDate.getMonth() && year === todayDate.getFullYear();
 
-    const firstDayOfMonth = new Date(year, month, 1);
-    const lastDayOfMonth = new Date(year, month + 1, 0);
-    const startDay = firstDayOfMonth.getDay();
-    const totalDays = lastDayOfMonth.getDate();
+    const totalDays = new Date(year, month + 1, 0).getDate();
+    const startDay = new Date(year, month, 1).getDay();
 
-    let day = 1;
     let row = document.createElement("tr");
+    for (let i = 0; i < startDay; i++) row.appendChild(emptyCell());
 
-    for (let i = 0; i < startDay; i++) {
-      row.appendChild(emptyCell());
-    }
-
-    while (day <= totalDays) {
+    for (let day = 1; day <= totalDays; day++) {
       if (row.children.length === 7) {
         calendarBody.appendChild(row);
         row = document.createElement("tr");
       }
-      const currentDay = day;
-      const cell = document.createElement("td");
-      const wrapper = document.createElement("div");
-      wrapper.classList.add("d-flex", "flex-column", "align-items-center");
-
-      const btn = document.createElement("button");
-      btn.textContent = currentDay;
-      btn.style.width = "100%";
-      btn.style.borderRadius = ".75rem";
-
-      const statusLabel = document.createElement("small");
-      statusLabel.classList.add("fw-bold", "mt-1");
-
-      const dayStatus = statusList.find(
-        (d) => d.day === currentDay && d.month === month && d.year === year
-      );
-
-      const today = todayDate.getDate();
-      const isCurrentMonth =
-        todayDate.getMonth() === month && todayDate.getFullYear() === year;
-      const dateObject = new Date(year, month, currentDay);
-      const isWeekend = dateObject.getDay() === 0 || dateObject.getDay() === 6;
-
-      if (
-        (isCurrentMonth && day < today) ||
-        isWeekend ||
-        (dayStatus &&
-          (dayStatus.status === "Confirmed" || dayStatus.status === "Pending"))
-      ) {
-        btn.classList.add("booked");
-        btn.disabled = true;
-
-        if (dayStatus?.status === "Confirmed") {
-          btn.textContent = currentDay + " 🔒";
-          statusLabel.textContent = `Confirmed by ${
-            users.find((u) => u.id === dayStatus.userId)?.username || "Unknown"
-          }`;
-          statusLabel.classList.add("text-danger");
-        } else if (dayStatus?.status === "Pending") {
-          btn.textContent = currentDay + " ⏳";
-          statusLabel.textContent = `Pending approval for ${
-            users.find((u) => u.id === dayStatus.userId)?.username || "Unknown"
-          }`;
-          statusLabel.classList.add("text-warning");
-        } else {
-          btn.textContent = currentDay + " 🔒";
-          statusLabel.textContent = isWeekend ? "Weekend" : "Unavailable";
-          statusLabel.classList.add("text-danger");
-        }
-      } else {
-        btn.classList.add("available");
-        btn.addEventListener("click", () => bookDate(currentDay, month, year));
-        statusLabel.textContent = "Available";
-        statusLabel.classList.add("text-success");
-      }
-      wrapper.appendChild(btn);
-      wrapper.appendChild(statusLabel);
-      cell.appendChild(wrapper);
-      row.appendChild(cell);
-      day++;
+      row.appendChild(renderDayCell(day, month, year, todayDate));
     }
-    while (row.children.length < 7) {
-      row.appendChild(emptyCell());
-    }
+
+    while (row.children.length < 7) row.appendChild(emptyCell());
     calendarBody.appendChild(row);
   }
+
+  function renderDayCell(day, month, year, todayDate) {
+    const td = document.createElement("td");
+    const wrapper = document.createElement("div");
+    wrapper.className = "d-flex flex-column align-items-center";
+
+    const btn = document.createElement("button");
+    btn.textContent = day;
+    btn.style.width = "100%";
+    btn.style.borderRadius = ".75rem";
+
+    const label = document.createElement("small");
+    label.className = "fw-bold mt-1";
+
+    const dayStatus = statusList.find(
+      (d) => d.day === day && d.month === month && d.year === year
+    );
+    const isWeekend = [0, 6].includes(new Date(year, month, day).getDay());
+    const isPastDay =
+      todayDate.getMonth() === month &&
+      todayDate.getFullYear() === year &&
+      day < todayDate.getDate();
+
+    if (
+      isPastDay ||
+      isWeekend ||
+      ["Confirmed", "Pending"].includes(dayStatus?.status)
+    ) {
+      btn.disabled = true;
+      btn.className = "booked";
+
+      if (dayStatus?.status === "Confirmed") {
+        btn.textContent = `${day} 🔒`;
+        label.textContent = `Confirmed by ${
+          users.find((u) => u.id === dayStatus.userId)?.username || "Unknown"
+        }`;
+        label.classList.add("text-danger");
+      } else if (dayStatus?.status === "Pending") {
+        btn.textContent = `${day} ⏳`;
+        label.textContent = `Pending approval for ${
+          users.find((u) => u.id === dayStatus.userId)?.username || "Unknown"
+        }`;
+        label.classList.add("text-warning");
+      } else {
+        btn.textContent = `${day} 🔒`;
+        label.textContent = isWeekend ? "Weekend" : "Unavailable";
+        label.classList.add("text-danger");
+      }
+    } else {
+      btn.className = "available";
+      btn.addEventListener("click", () => bookDate(day, month, year));
+      label.textContent = "Available";
+      label.classList.add("text-success");
+    }
+
+    wrapper.append(btn, label);
+    td.appendChild(wrapper);
+    return td;
+  }
+
   function emptyCell() {
     const td = document.createElement("td");
-    td.classList.add("empty");
+    td.className = "empty";
     return td;
   }
 
   function bookDate(day, month, year) {
-    // Check if user already has a booking
-    // const pendingBooking = statusList.find(
-    //   (d) => d.status === "Pending" && d.userId === currentUser.id
-    // );
-    const existingBooking = statusList.find((d) => d.userId === currentUser.id);
-    if (existingBooking) {
-      alert("You already have a booking. Cancel it before booking a new date.");
-      return;
+    if (statusList.some((d) => d.userId === currentUser.id)) {
+      return alert(
+        "You already have a booking. Cancel it before booking a new date."
+      );
     }
+
+    const newBooking = {
+      day,
+      month,
+      year,
+      userId: currentUser.id,
+      status: "Pending",
+      timestamp: Date.now(),
+    };
+
     const existingIndex = statusList.findIndex(
       (d) => d.day === day && d.month === month && d.year === year
     );
     if (existingIndex > -1) {
-      statusList[existingIndex] = {
-        day,
-        month,
-        year,
-        userId: currentUser.id,
-        status: "Pending",
-        timestamp: Date.now(),
-      };
+      statusList[existingIndex] = newBooking;
     } else {
-      statusList.push({
-        day,
-        month,
-        year,
-        userId: currentUser.id,
-        status: "Pending",
-        timestamp: Date.now(),
-      });
+      statusList.push(newBooking);
     }
-    localStorage.setItem("status", JSON.stringify(statusList));
+
+    setLocal("status", statusList);
     alert(
       `Booking requested for ${day}/${
         month + 1
@@ -263,83 +242,82 @@ if (document.getElementById("calendar-body")) {
     renderCalendar();
   }
 
-  document.getElementById("logout").addEventListener("click", logout);
+  // Auto-update calendar when admin updates bookings
+  window.addEventListener("storage", (e) => {
+    if (e.key === "status") {
+      statusList = getLocal("status");
+      renderCalendar();
+    }
+  });
+
   renderCalendar();
 }
 
-// === Admin Page Script ===
+// ================== Admin Page ==================
 if (document.getElementById("booking-list")) {
   const bookingList = document.getElementById("booking-list");
 
   function renderBookings() {
-    let statusList = JSON.parse(localStorage.getItem("status")) || [];
-    const users = JSON.parse(localStorage.getItem("users")) || [];
+    let statusList = getLocal("status");
+    const users = getLocal("users");
     const now = Date.now();
 
-    // Remove expired pending bookings (older than 5 min)
-    statusList = statusList.filter((b) => {
-      if (b.status === "Pending" && now - b.timestamp > 5 * 60 * 1000) {
-        return false; // expired
-      }
-      return true;
-    });
+    // Expire pending bookings older than 5 min
+    statusList = statusList.filter(
+      (b) => !(b.status === "Pending" && now - b.timestamp > 5 * 60000)
+    );
 
     bookingList.innerHTML = "";
 
     statusList.forEach((b, index) => {
-      const row = document.createElement("tr");
-
       const user = users.find((u) => u.id === b.userId)?.username || "Unknown";
       const date = `${b.day}/${b.month + 1}/${b.year}`;
-      const status = b.status;
-
-      // Calculate time left if pending
       let timeLeft = "-";
+
       if (b.status === "Pending") {
-        const remaining = 5 * 60 * 1000 - (now - b.timestamp);
+        const remaining = 5 * 60000 - (now - b.timestamp);
         timeLeft =
           remaining > 0 ? Math.floor(remaining / 1000) + "s" : "Expired";
       }
 
-      row.innerHTML = `
+      bookingList.innerHTML += `
+        <tr>
           <td>${user}</td>
           <td>${date}</td>
-          <td>${status}</td>
+          <td>${b.status}</td>
           <td>${timeLeft}</td>
           <td>
             ${
               b.status === "Pending"
                 ? `
-              <button class="btn btn-success btn-sm" onclick="confirmBooking(${index})">Confirm</button>
-              <button class="btn btn-danger btn-sm" onclick="rejectBooking(${index})">Reject</button>
-            `
+                <button class="btn btn-success btn-sm" onclick="confirmBooking(${index})">Confirm</button>
+                <button class="btn btn-danger btn-sm" onclick="rejectBooking(${index})">Reject</button>
+              `
                 : "Confirmed"
             }
           </td>
-        `;
-      bookingList.appendChild(row);
+        </tr>`;
     });
-
-    // Save filtered/updated list
-    localStorage.setItem("status", JSON.stringify(statusList));
+    setLocal("status", statusList);
   }
 
   function confirmBooking(index) {
-    let statusList = JSON.parse(localStorage.getItem("status")) || [];
+    const statusList = getLocal("status");
     statusList[index].status = "Confirmed";
-    localStorage.setItem("status", JSON.stringify(statusList));
+    setLocal("status", statusList);
     renderBookings();
   }
 
   function rejectBooking(index) {
-    let statusList = JSON.parse(localStorage.getItem("status")) || [];
+    const statusList = getLocal("status");
     statusList.splice(index, 1);
-    localStorage.setItem("status", JSON.stringify(statusList));
+    setLocal("status", statusList);
     renderBookings();
   }
 
   setInterval(renderBookings, 1000);
   renderBookings();
+
   document.getElementById("calendar-btn").addEventListener("click", () => {
     window.location.href = "calendar.html";
   });
